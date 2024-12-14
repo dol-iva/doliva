@@ -9,22 +9,29 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-
-export const [setLibs, getLibs] = (() => {
-  let libs;
-  return [
-    (prodLibs, location) => {
-      libs = (() => {
-        const { hostname, search } = location || window.location;
-        if (!(hostname.includes('.aem.') || hostname.includes('local'))) return prodLibs;
-        const branch = new URLSearchParams(search).get('milolibs') || 'main';
-        if (branch === 'local') return 'http://localhost:6456/libs';
-        return branch.includes('--') ? `https://${branch}.aem.live/libs` : `https://${branch}--milo--adobecom.aem.live/libs`;
-      })();
-      return libs;
-    }, () => libs,
-  ];
+export const LIBS = (() => {
+  const { hostname, search } = window.location;
+  if (!(hostname.includes('.hlx.') || hostname.includes('local'))) return '/libs';
+  const branch = new URLSearchParams(search).get('milolibs') || 'main';
+  if (branch === 'local') return 'http://localhost:6456/libs';
+  return branch.includes('--') ? `https://${branch}.hlx.live/libs` : `https://${branch}--milo--adobecom.hlx.live/libs`;
 })();
+
+// export const [setLibs, getLibs] = (() => {
+//   let libs;
+//   return [
+//     (prodLibs, location) => {
+//       libs = (() => {
+//         const { hostname, search } = location || window.location;
+//         if (!(hostname.includes('.aem.') || hostname.includes('local'))) return prodLibs;
+//         const branch = new URLSearchParams(search).get('milolibs') || 'main';
+//         if (branch === 'local') return 'http://localhost:6456/libs';
+//         return branch.includes('--') ? `https://${branch}.aem.live/libs` : `https://${branch}--milo--adobecom.aem.live/libs`;
+//       })();
+//       return libs;
+//     }, () => libs,
+//   ];
+// })();
 
 
 function decorateArea(area = document) {
@@ -51,7 +58,7 @@ function decorateArea(area = document) {
 const STYLES = '';
 
 // Use 'https://milo.adobe.com/libs' if you cannot map '/libs' to milo's origin.
-const LIBS = '/libs';
+// const LIBS = 'https://milo.adobe.com/libs';
 
 // Add any config options.
 const CONFIG = {
@@ -78,7 +85,7 @@ decorateArea();
  * ------------------------------------------------------------
  */
 
-const miloLibs = setLibs(LIBS);
+const miloLibs = LIBS;
 
 (function loadStyles() {
   const paths = [`${miloLibs}/styles/styles.css`];
